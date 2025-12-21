@@ -71,30 +71,12 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
   local quality = player.cursor_ghost and player.cursor_ghost.quality or 
     player.cursor_stack and player.cursor_stack.valid_for_read and player.cursor_stack.quality or nil
 
-  if not storage.tomwub[event.player_index] then
-    -- set the previous item and count
-    storage.tomwub[event.player_index] = {
-      item = item,
-      count = player.cursor_stack and player.cursor_stack.count or 0,
-      quality = quality
-    }
-    return
-  end
-
   local old_item = storage.tomwub[event.player_index].item
   local old_count = storage.tomwub[event.player_index].count
   local old_quality = storage.tomwub[event.player_index].quality
 
   -- if just swapped using custom key, go to end
-  if old_count == -2 then
-    -- set the previous item and count
-    storage.tomwub[event.player_index] = {
-      item = item,
-      count = player.cursor_stack and player.cursor_stack.count or 0,
-      quality = quality
-    }
-    return
-  end
+  if old_count == -2 then goto continue end
 
   -- was previously holding item but placed last one, signaled by on_built_entity OR just pipetted a tomwub pipe (creating ghost item)
   if player.cursor_ghost and old_count == -1 then
@@ -107,15 +89,7 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
     }
 
     -- if none removed
-    if removed == 0 then
-      -- set the previous item and count
-      storage.tomwub[event.player_index] = {
-        item = item,
-        count = player.cursor_stack and player.cursor_stack.count or 0,
-        quality = quality
-      }
-      return
-    end
+    if removed == 0 then goto continue end
 
     -- find open slot for hand to go
     local _, stack = player.get_main_inventory().find_empty_stack()
@@ -208,6 +182,15 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
       slot = stack
     }
   end
+
+  ::continue:: -- something skipped to end
+
+  -- set the previous item and count
+  storage.tomwub[event.player_index] = {
+    item = item,
+    count = player.cursor_stack and player.cursor_stack.count or 0,
+    quality = quality
+  }
 end)
 
 -- on placed entity
