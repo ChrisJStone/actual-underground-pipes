@@ -85,8 +85,9 @@ for p, pipe in pairs(data.raw.pipe) do
         {
           type = "pipe",
           name = "tomwub-" .. p,
-          icon = pipe.icon or data.raw.pipe.pipe.icon,
-          icon_size = pipe.icon_size or data.raw.pipe.pipe.icon_size,
+          icon = pipe.icon or not pipe.icons and data.raw.pipe.pipe.icon or nil,
+          icon_size = pipe.icon_size or not pipe.icons and data.raw.pipe.pipe.icon_size or nil,
+          icons = pipe.icons or not pipe.icon and data.raw.pipe.pipe.icons or nil,
           localised_name = {"entity-name.tomwub-underground", pipe.localised_name or {"entity-name." .. pipe.name}},
           fluid_box = table.deepcopy(pipe.fluid_box),
           pictures = table.deepcopy(pipe.pictures),

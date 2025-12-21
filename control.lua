@@ -5,7 +5,7 @@ end)
 local event_filter = {{filter = "type", type = "pipe"}, {filter = "type", type = "storage-tank"}}
 
 script.on_event(defines.events.on_player_controller_changed, function (event)
-  local player = game.players[event.player_index]
+  local player = game.get_player(event.player_index)
 
   if not storage.tomwub[player.index] then return end
 
@@ -30,7 +30,7 @@ end)
 
 -- when pipetting an underground pipe, put that one in the hand instead
 script.on_event(defines.events.on_player_pipette, function (event)
-  local player = game.players[event.player_index]
+  local player = game.get_player(event.player_index)
 
   -- only run if selected entity (duh)
   if not player.selected then return end
@@ -60,8 +60,7 @@ end)
 -- if ghost underground selected, check if it needs refilling
 script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
 
-  local player = game.players[event.player_index]
-  if not player then return end
+  local player = game.get_player(event.player_index)
 
   -- if in remote view do nothing
   if player.controller_type == defines.controllers.remote then return end
@@ -72,12 +71,9 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
   local quality = player.cursor_ghost and player.cursor_ghost.quality or 
     player.cursor_stack and player.cursor_stack.valid_for_read and player.cursor_stack.quality or nil
 
-  -- if the player somehow broke this... give up
-  if storage.tomwub[event.player_index] == nil then goto continue end
-
-  old_item = storage.tomwub[event.player_index].item
-  old_count = storage.tomwub[event.player_index].count
-  old_quality = storage.tomwub[event.player_index].quality
+  local old_item = storage.tomwub[event.player_index].item
+  local old_count = storage.tomwub[event.player_index].count
+  local old_quality = storage.tomwub[event.player_index].quality
 
   -- if just swapped using custom key, go to end
   if old_count == -2 then goto continue end
@@ -198,8 +194,7 @@ script.on_event(defines.events.on_player_cursor_stack_changed, function (event)
 end)
 
 -- on placed entity
-function handle(event)
-
+local function handle(event)
   -- teleport valid entities so that pipe visualizations appear properly
   if event.entity.name:sub(1,7) == "tomwub-" then
     event.entity.teleport(event.entity.position)
@@ -223,13 +218,12 @@ function handle(event)
     end
   end
 
-  player = event.player_index and game.players[event.player_index]
-  if not player or not storage.tomwub[player.index] then return end
+  if not event.player_index or not storage.tomwub[event.player_index] then return end
+  local player = game.get_player(event.player_index)
 
   -- if player just placed last item, then signal to script to update hand again
   if player.is_cursor_empty() and storage.tomwub[player.index].item and storage.tomwub[player.index].item:sub(1,7) == "tomwub-" and storage.tomwub[player.index].count == 1 then
     storage.tomwub[player.index].count = -1
-
     -- set ghost cursor
     player.cursor_ghost = {
       name = event.entity.name,
@@ -246,8 +240,8 @@ script.on_event(defines.events.script_raised_revive, handle, event_filter)
 -- swap between aboveground and belowground layers
 script.on_event("tomwub-swap-layer", function(event)
 
-  player = game.players[event.player_index]
-  if not player then return end
+  if not event.player_index then return end
+  local player = game.get_player(event.player_index)
 
   local item = player.cursor_ghost and player.cursor_ghost.name.name or
     player.cursor_stack and player.cursor_stack.valid_for_read and player.cursor_stack.name or ""
@@ -414,8 +408,8 @@ function handle(event)
       end
     end
   
-    player = event.player_index and game.players[event.player_index]
-    if player then
+    if event.player_index then
+      local player = game.get_player(event.player_index)
 
       -- if player just placed last item, then signal to script to update hand again
       if player.is_cursor_empty() and storage.tomwub[player.index].item and storage.tomwub[player.index].item:sub(1,7) == "tomwub-" and storage.tomwub[player.index].count == 1 then
