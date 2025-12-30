@@ -13,7 +13,7 @@ end
 
 for p, pipe in pairs(data.raw.pipe) do
   for u, underground in pairs(data.raw["pipe-to-ground"]) do
-    if u:sub(1,-11) == p then
+    if u:sub(1,-11) == p and not underground.ignore_by_tomwub then
       underground.solved_by_tomwub = true
       local underground_collision_mask, tag
       -- the underground name matches with the pipe name
@@ -179,6 +179,7 @@ require("__the-one-mod-with-underground-bits__/compatibility/prototypes/elevated
 require("__the-one-mod-with-underground-bits__/compatibility/prototypes/elevated-space-pipes")
 require("__the-one-mod-with-underground-bits__/compatibility/prototypes/FlowControl")
 require("__the-one-mod-with-underground-bits__/compatibility/prototypes/dredgeworks")
+require("__the-one-mod-with-underground-bits__/compatibility/prototypes/underground-heat-pipe")
 
 data:extend{
   {
@@ -194,7 +195,7 @@ data:extend{
 }
 
 for u, underground in pairs(data.raw["pipe-to-ground"]) do
-  if not underground.solved_by_tomwub then
+  if not underground.solved_by_tomwub and not underground.ignore_by_tomwub then
     local directions, tag = {}
 
     if not mods["no-pipe-touching"] then
@@ -256,6 +257,9 @@ for u, underground in pairs(data.raw["pipe-to-ground"]) do
 
     -- attempt to fix recipes
     xutil.adjust_recipes(u)
+  elseif underground.ignore_by_tomwub then
+    log("ignoring prototype: " .. u)
+    underground.ignore_by_tomwub = nil
   end
 
   underground.solved_by_tomwub = nil
@@ -318,6 +322,7 @@ for _, type in pairs{
         end
       end
     else
+      log("ignoring prototype: " .. prototype.name)
       prototype.ignore_by_tomwub = nil
     end
   end

@@ -8,7 +8,7 @@ Got a cool base that uses my mod? Let me know and I can pics up on the mod porta
 
 Have you ever felt that piping things under buildings was too easy? That dragging a pipe to ground along was just... not fun?
 
-Well no more! Now, with Actual Underground Pipes, you need to build the underground pipes! Using the same keybind for changing rail layer (default: ALT + G) change between aboveground and underground pipes! No extra items, no complex GUIs, no new recipes, just one keybind! *Note: pipes have been removed from pipe to ground recipes to compensate. No new items, recipes, or technologies are required; just press the keybind and any normal pipes in your inventory can be used as underground pipes.*
+Well no more! Now, with Actual Underground Pipes, you need to build the underground pipes! Using the same keybind for changing rail layer (default: G) change between aboveground and underground pipes! No extra items, no complex GUIs, no new recipes, just one keybind! *Note: pipes have been removed from pipe to ground recipes to compensate. No new items, recipes, or technologies are required; just press the keybind and any normal pipes in your inventory can be used as underground pipes.*
 
 Underground pipes have the same restrictions as normal pipe to grounds. This means you can't build them across lava or space.
 
@@ -22,7 +22,6 @@ Unfortunately, do to the hardcoded nature of belts, they can't be done in the sa
 # Known Issues
 - Pipe to Grounds have a phantom pipe cover when not connected. It's not fixable without removing the pipe covers of pipe to grounds entirely, and it only shows up when they aren't connected, so I don't see it as a major issue.
 - The pipe to ground in your cursor is flipped after placement. This is not fixable without some major downsides so I'm not considering it for now.
-- Certain orientations of pipe to grounds are incorrectly flipped. Honestly no idea how this one is caused or the fix, it might be an engine issue ([mod bug report](https://mods.factorio.com/mod/the-one-mod-with-underground-bits/discussion/68fdf4334ecffc2cbd51b1f7) [engine bug report](https://forums.factorio.com/viewtopic.php?p=685093))
 - There may be crashes or locale issues with certain mods. If you find them, please let me know.
 
 # Compatibility
